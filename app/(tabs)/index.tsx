@@ -1,77 +1,188 @@
-import { Image, StyleSheet, Platform, Button } from 'react-native';
+import React from 'react';
+import {
+  Image,
+  StyleSheet,
+  Button,
+  View,
+  FlatList,
+  ScrollView,
+  Text,
+  Dimensions,
+} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+// Define types for featured images and hotel data
+interface FeaturedImage {
+  id: number;
+  image: any; // Replace 'any' with ImageSourcePropType if you're using TypeScript with React Native types.
+}
+
+interface Hotel {
+  id: string;
+  name: string;
+  location: string;
+  price: string;
+  image: any; // Replace 'any' with ImageSourcePropType for better type checking.
+}
+
+const { width } = Dimensions.get('window');
+
+const featuredImages: FeaturedImage[] = [
+  { id: 1, image: require('@/assets/images/hotel1.jpg') },
+  { id: 2, image: require('@/assets/images/hotel2.jpg') },
+  { id: 3, image: require('@/assets/images/hotel3.jpg') },
+];
+
+const hotelData: Hotel[] = [
+  {
+    id: '1',
+    name: 'Grand Plaza Hotel',
+    location: 'New York, USA',
+    price: '$250/night',
+    image: require('@/assets/images/hotel1.jpg'),
+  },
+  {
+    id: '2',
+    name: 'Sunny Beach Resort',
+    location: 'Miami, USA',
+    price: '$300/night',
+    image: require('@/assets/images/hotel2.jpg'),
+  },
+  {
+    id: '3',
+    name: 'Mountain Retreat',
+    location: 'Denver, USA',
+    price: '$200/night',
+    image: require('@/assets/images/hotel3.jpg'),
+  },
+];
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <Button color='green'
-         title='Click here' />
+  const renderHotelCard = ({ item }: { item: Hotel }) => (
+    <View style={styles.card}>
+      <Image source={item.image} style={styles.cardImage} />
+      <View style={styles.cardContent}>
+        <Text style={styles.cardTitle}>{item.name}</Text>
+        <Text style={styles.cardSubtitle}>{item.location}</Text>
+        <Text style={styles.cardPrice}>{item.price}</Text>
+        <Button title="Book Now" color="green" onPress={() => {}} />
+      </View>
+    </View>
+  );
 
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText  type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText  type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  return (
+    <ScrollView>
+       <View style={styles.header}>
+              <Text style={styles.headerText}>BookmyRoom</Text>
+            </View>
+      <View style={styles.container}>
+        <Text style={styles.welcomeText}>Welcome to HotelFinder!</Text>
+
+        <Carousel
+          width={width}
+          height={200}
+          data={featuredImages}
+          loop
+          autoPlay
+          autoPlayInterval={3000}
+          renderItem={({ item }) => (
+            <Image source={item.image} style={styles.carouselImage} />
+          )}
+        />
+
+        {/* Hotel Cards Section */}
+        <Text style={styles.sectionTitle}>Explore Our Top Picks</Text>
+        <FlatList<Hotel>
+          data={hotelData}
+          renderItem={renderHotelCard}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
+
+        {/* Additional Information */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.sectionTitle}>Need Help?</Text>
+          <Text>Contact our 24/7 support team for assistance.</Text>
+          <Button title="Contact Us" onPress={() => {}} />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    padding: 16,
+    backgroundColor:'white'
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    backgroundColor: '#79b652',
+  },
+  headerText: {
+    fontSize: 24,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign:'center'
+  },
+  welcomeText: {
+    marginBottom: 16,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  carouselImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  sectionTitle: {
+    marginTop: 16,
+    marginBottom: 8,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  card: {
+    width: 200,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginRight: 16,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  cardImage: {
+    height: 120,
+    width: '100%',
+  },
+  cardContent: {
+    padding: 8,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  cardPrice: {
+    fontSize: 14,
+    fontWeight: 'bold',
     marginBottom: 8,
   },
- 
-  reactLogo: {
-    height: 200,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  infoContainer: {
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
   },
 });
