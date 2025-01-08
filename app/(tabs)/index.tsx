@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
-// Define types for featured images and hotel data
 interface FeaturedImage {
   id: number;
-  image: any; // Replace 'any' with ImageSourcePropType if you're using TypeScript with React Native types.
+  image: any; 
 }
 
 interface Hotel {
@@ -22,7 +21,7 @@ interface Hotel {
   name: string;
   location: string;
   price: string;
-  image: any; // Replace 'any' with ImageSourcePropType for better type checking.
+  image: any; 
 }
 
 const { width } = Dimensions.get('window');
@@ -90,7 +89,6 @@ export default function HomeScreen() {
           )}
         />
 
-        {/* Hotel Cards Section */}
         <Text style={styles.sectionTitle}>Explore Our Top Picks</Text>
         <FlatList<Hotel>
           data={hotelData}
@@ -100,7 +98,6 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
         />
 
-        {/* Additional Information */}
         <View style={styles.infoContainer}>
           <Text style={styles.sectionTitle}>Need Help?</Text>
           <Text>Contact our 24/7 support team for assistance.</Text>
